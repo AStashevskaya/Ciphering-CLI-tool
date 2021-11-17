@@ -1,5 +1,3 @@
-import { ERROR_TEXT, FLAG_CONFIG } from "../constants/index.js";
-
 const isUpperCase = (letter) => {
   return /[A-Z]/.test(letter);
 };
@@ -30,22 +28,18 @@ const checkLength = (string) => {
   }
 };
 
-const getValue = (args, flag) => {
-  const filteredArgs = args.filter((el) => el === flag);
-  const flagIdx = flag ? args.indexOf(flag) : null;
+const getValue = (args, flag1, flag2) => {
+  const filteredArgs = args.filter((el) => el === flag1 || el === flag2);
+  const flagIdx = filteredArgs[0] ? args.indexOf(filteredArgs[0]) : null;
 
   if (!!args[flagIdx && flagIdx + 1] && filteredArgs.length === 1) {
     return args[flagIdx + 1];
   }
+
+  if (filteredArgs.length > 1) {
+    process.stderr.write("Please, check your arguments...");
+    process.exit(1);
+  }
 };
-
-// const getConfig = (arr) => {
-//   const filteredArgs = arr.filter((el) => el === FLAG_CONFIG);
-//   const indexConfig = arr.indexOf(FLAG_CONFIG);
-
-//   if (!!arr[indexConfig && indexConfig + 1] && filteredArgs.length === 1) {
-//     return arr[indexConfig + 1];
-//   }
-// };
 
 export { isUpperCase, checkEncoding, checkLength, checkCipher, getValue };

@@ -1,7 +1,12 @@
 import { Transform } from "stream";
-import alphabet from "./alphabet.js";
 import { isUpperCase } from "./src/utils/index.js";
-import { ERROR_TEXT, ATBASH, CAESAR, ROT } from "./src/constants/index.js";
+import {
+  ERROR_TEXT,
+  ATBASH,
+  CAESAR,
+  ROT,
+  ALPHABET,
+} from "./src/constants/index.js";
 import { checkCipher } from "./src/utils/index.js";
 
 class MyTransform extends Transform {
@@ -13,7 +18,7 @@ class MyTransform extends Transform {
 
   _transform(chunk, encoding, callback) {
     const trancformChunk = this.validate(chunk.toString());
-    console.log("trancformChunk", trancformChunk);
+
     this.push(trancformChunk);
     callback();
   }
@@ -29,37 +34,37 @@ class MyTransform extends Transform {
       case ROT:
         return this.rot(string, this.encoding);
       default:
-        console.log(ERROR_TEXT);
+        process.stderr.write("Ooops! Something goes wrong..");
+        process.exit(1);
         break;
     }
   }
 
   caesar(string, encoding) {
-    console.log("caesar", encoding);
     let result = "";
     const nonShipheredArr = string.split("");
 
     for (let letter of nonShipheredArr) {
       const isUpperCaseLetter = isUpperCase(letter);
-      const isLetter = alphabet.includes(letter.toUpperCase());
+      const isLetter = ALPHABET.includes(letter.toUpperCase());
 
       if (!isLetter) {
         result += letter;
         continue;
       }
 
-      const letterIdx = alphabet.indexOf(letter.toUpperCase());
+      const letterIdx = ALPHABET.indexOf(letter.toUpperCase());
       let newLetterIdx;
 
       if (encoding) {
-        newLetterIdx = letterIdx + 1 === alphabet.length ? 0 : letterIdx + 1;
+        newLetterIdx = letterIdx + 1 === ALPHABET.length ? 0 : letterIdx + 1;
       } else {
-        newLetterIdx = letterIdx - 1 < 0 ? alphabet.length - 1 : letterIdx - 1;
+        newLetterIdx = letterIdx - 1 < 0 ? ALPHABET.length - 1 : letterIdx - 1;
       }
 
       const newLetter = isUpperCaseLetter
-        ? alphabet[newLetterIdx].toUpperCase()
-        : alphabet[newLetterIdx].toLowerCase();
+        ? ALPHABET[newLetterIdx].toUpperCase()
+        : ALPHABET[newLetterIdx].toLowerCase();
 
       result += newLetter;
     }
@@ -68,25 +73,23 @@ class MyTransform extends Transform {
 
   atbash(string) {
     let result = "";
-    console.log("atbash");
-
     const nonShipheredArr = string.split("");
 
     for (let letter of nonShipheredArr) {
       const isUpperCaseLetter = isUpperCase(letter);
-      const isLetter = alphabet.includes(letter.toUpperCase());
+      const isLetter = ALPHABET.includes(letter.toUpperCase());
 
       if (!isLetter) {
         result += letter;
         continue;
       }
 
-      const letterIdx = alphabet.indexOf(letter.toUpperCase());
-      const newLetterIdx = Math.abs(alphabet.length - 1 - letterIdx);
+      const letterIdx = ALPHABET.indexOf(letter.toUpperCase());
+      const newLetterIdx = Math.abs(ALPHABET.length - 1 - letterIdx);
 
       const newLetter = isUpperCaseLetter
-        ? alphabet[newLetterIdx].toUpperCase()
-        : alphabet[newLetterIdx].toLowerCase();
+        ? ALPHABET[newLetterIdx].toUpperCase()
+        : ALPHABET[newLetterIdx].toLowerCase();
 
       result += newLetter;
     }
@@ -95,34 +98,33 @@ class MyTransform extends Transform {
 
   rot(string, encoding = true) {
     let result = "";
-    console.log("rot", encoding);
     const nonShipheredArr = string.split("");
 
     for (let letter of nonShipheredArr) {
       const isUpperCaseLetter = isUpperCase(letter);
-      const isLetter = alphabet.includes(letter.toUpperCase());
+      const isLetter = ALPHABET.includes(letter.toUpperCase());
 
       if (!isLetter) {
         result += letter;
         continue;
       }
 
-      const letterIdx = alphabet.indexOf(letter.toUpperCase());
+      const letterIdx = ALPHABET.indexOf(letter.toUpperCase());
       let newLetterIdx;
 
       if (encoding) {
         newLetterIdx =
-          letterIdx + 8 >= alphabet.length
-            ? 8 - (alphabet.length - letterIdx)
+          letterIdx + 8 >= ALPHABET.length
+            ? 8 - (ALPHABET.length - letterIdx)
             : letterIdx + 8;
       } else {
         newLetterIdx =
-          letterIdx - 8 < 0 ? alphabet.length - (8 - letterIdx) : letterIdx - 8;
+          letterIdx - 8 < 0 ? ALPHABET.length - (8 - letterIdx) : letterIdx - 8;
       }
 
       const newLetter = isUpperCaseLetter
-        ? alphabet[newLetterIdx].toUpperCase()
-        : alphabet[newLetterIdx].toLowerCase();
+        ? ALPHABET[newLetterIdx].toUpperCase()
+        : ALPHABET[newLetterIdx].toLowerCase();
 
       result += newLetter;
     }

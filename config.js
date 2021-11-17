@@ -3,7 +3,8 @@ import { ERROR_TEXT, ATBASH, CAESAR, ROT } from "./src/constants/index.js";
 
 export default function configValidation(configStr) {
   if (!configStr || typeof configStr !== "string") {
-    console.error(ERROR_TEXT);
+    process.stderr.write(ERROR_TEXT);
+    process.exit(1);
   }
 
   const errors = [];
@@ -36,9 +37,9 @@ export default function configValidation(configStr) {
   }
 
   if (errors.length) {
-    console.error(ERROR_TEXT);
-    return
-  } 
+    process.stderr.write(ERROR_TEXT);
+    process.exit(1);
+  }
 
   return configArray;
 }
