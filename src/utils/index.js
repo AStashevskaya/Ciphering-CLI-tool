@@ -1,3 +1,5 @@
+import { ARGUMENTS_ERROR } from '../constants/index.js'
+
 const isUpperCase = (letter) => {
   return /[A-Z]/.test(letter);
 };
@@ -37,7 +39,7 @@ const getValue = (args, flag1, flag2) => {
   }
 
   if (filteredArgs.length > 1) {
-    process.stderr.write("Please, check your arguments...");
+    process.stderr.write(ARGUMENTS_ERROR);
     process.exit(1);
   }
 };

@@ -20,8 +20,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const checkPath = (address) =>
   address.startsWith(".") ? path.join(__dirname, address) : address;
 
-function ciphering_cli() {
-  const args = process.argv;
+export default function ciphering_cli(args) {
+  // const args = process.argv;
 
   const config = getValue(args, FLAG_CONFIG, FLAG_CONFIG_ABV);
 
@@ -76,4 +76,5 @@ function ciphering_cli() {
   }
 }
 
-ciphering_cli();
+const args = process.argv;
+ciphering_cli(args);

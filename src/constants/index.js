@@ -10,6 +10,7 @@ const FLAG_OUTPUT = "--output";
 const FLAG_CONFIG = "--config";
 const ALPHABETString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const ALPHABET = ALPHABETString.split("");
+const ARGUMENTS_ERROR = "Please, check your arguments...";
 
 export {
   ERROR_TEXT,
@@ -23,4 +24,5 @@ export {
   FLAG_INPUT_ABV,
   FLAG_CONFIG_ABV,
   ALPHABET,
+  ARGUMENTS_ERROR,
 };
