@@ -55,7 +55,7 @@ function ciphering_cli() {
       : process.stdin;
 
     const write = pathToFileOutput
-      ? createWriteStream(pathToFileOutput)
+      ? createWriteStream(pathToFileOutput, { flags: "a" })
       : process.stdout;
 
     for (let code of configArr) {
