@@ -9,11 +9,14 @@ import {
   FLAG_CONFIG_ABV,
   ERROR_TEXT,
   ARGUMENTS_ERROR,
+  NO_CONFIG_ERROR,
+  INPUT_ERROR,
+  OUTPUT_ERROR,
 } from "../constants/index.js";
-import ciphering_cli from "../../my_ciphering_cli.js";
+import { ciphering_cli } from "../../chipher.js";
 
 describe("Test cli arguments", () => {
-  // const realProcess = process;
+  const realProcess = process;
 
   // afterEach(() => {
   //   global.process = realProcess;
@@ -25,7 +28,6 @@ describe("Test cli arguments", () => {
   });
 
   test("User passes the same cli argument twice;", () => {
-    const realProcess = process;
     const exitMock = jest.fn();
 
     jest.spyOn(process, "exit").mockImplementation(() => {});
@@ -42,28 +44,99 @@ describe("Test cli arguments", () => {
     global.process = realProcess;
   });
 
-  // test("User doesn't pass -c or --config argument", () => {
-  //   const cli_arguments = [
-  //     FLAG_INPUT,
-  //     "./input.txt",
-  //     FLAG_OUTPUT,
-  //     "./output.txt",
-  //   ];
+  test("User doesn't pass -c or --config argument", () => {
+    const cli_arguments = [
+      FLAG_INPUT,
+      "./input.txt",
+      FLAG_OUTPUT,
+      "./output.txt",
+    ];
 
-  //   const realProcess = process;
-  //   const exitMock = jest.fn();
+    const exitMock = jest.fn();
 
-  //   jest.spyOn(process, "exit").mockImplementation(() => {});
+    jest.spyOn(process, "exit").mockImplementation(() => {});
 
-  //   const checkErrorMessage = jest
-  //     .spyOn(process.stderr, "write")
-  //     .mockImplementation(() => {});
+    const checkErrorMessage = jest
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => {});
 
-  //   global.process = { ...realProcess, exit: exitMock };
-    
-  //   ciphering_cli(cli_arguments);
-  //   expect(exitMock).toHaveBeenCalledWith(1);
-  //   expect(checkErrorMessage).toHaveBeenCalledWith("There is no config");
-  //   global.process = realProcess;
-  // });
+    global.process = { ...realProcess, exit: exitMock };
+
+    ciphering_cli(cli_arguments);
+    expect(exitMock).toHaveBeenCalledWith(1);
+    expect(checkErrorMessage).toHaveBeenCalledWith(NO_CONFIG_ERROR);
+  });
+
+  test("User passes -i argument with path that doesn't exist or with no read access", () => {
+    const cli_arguments = [
+      FLAG_CONFIG,
+      "C1-C1",
+      FLAG_INPUT,
+      "./src/input.txt",
+      FLAG_OUTPUT,
+      "./output.txt",
+    ];
+
+    const exitMock = jest.fn();
+
+    jest.spyOn(process, "exit").mockImplementation(() => {});
+
+    const checkErrorMessage = jest
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => {});
+
+    global.process = { ...realProcess, exit: exitMock };
+
+    ciphering_cli(cli_arguments);
+    expect(exitMock).toHaveBeenCalledWith(1);
+    expect(checkErrorMessage).toHaveBeenCalledWith(INPUT_ERROR);
+  });
+
+  test(
+    "User passes incorrent symbols in argument for --config", () => {
+      const cli_arguments = [
+        FLAG_CONFIG,
+        "C-C1"
+      ];
+
+      const exitMock = jest.fn();
+
+      jest.spyOn(process, "exit").mockImplementation(() => {});
+
+      const checkErrorMessage = jest
+        .spyOn(process.stderr, "write")
+        .mockImplementation(() => {});
+
+      global.process = { ...realProcess, exit: exitMock };
+
+      ciphering_cli(cli_arguments);
+      expect(exitMock).toHaveBeenCalledWith(1);
+      expect(checkErrorMessage).toHaveBeenCalledWith(ERROR_TEXT);
+    }
+  );
+
+   test("User passes -o argument with path to directory that doesn't exist or with no read access", () => {
+     const cli_arguments = [
+       FLAG_CONFIG,
+       "C1-C1",
+       FLAG_INPUT,
+       "./input.txt",
+       FLAG_OUTPUT,
+       "./src/output.txt",
+     ];
+
+     const exitMock = jest.fn();
+
+     jest.spyOn(process, "exit").mockImplementation(() => {});
+
+     const checkErrorMessage = jest
+       .spyOn(process.stderr, "write")
+       .mockImplementation(() => {});
+
+     global.process = { ...realProcess, exit: exitMock };
+
+     ciphering_cli(cli_arguments);
+     expect(exitMock).toHaveBeenCalledWith(1);
+     expect(checkErrorMessage).toHaveBeenCalledWith(OUTPUT_ERROR);
+   });
 });

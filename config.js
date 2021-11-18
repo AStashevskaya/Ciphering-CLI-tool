@@ -4,7 +4,7 @@ import { ERROR_TEXT, ATBASH, CAESAR, ROT } from "./src/constants/index.js";
 export default function configValidation(configStr) {
   if (!configStr || typeof configStr !== "string") {
     process.stderr.write(ERROR_TEXT);
-    process.exit(1);
+    return process.exit(1);
   }
 
   const errors = [];
@@ -38,7 +38,7 @@ export default function configValidation(configStr) {
 
   if (errors.length) {
     process.stderr.write(ERROR_TEXT);
-    process.exit(1);
+    return process.exit(1);
   }
 
   return configArray;

@@ -11,6 +11,9 @@ const FLAG_CONFIG = "--config";
 const ALPHABETString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const ALPHABET = ALPHABETString.split("");
 const ARGUMENTS_ERROR = "Please, check your arguments...";
+const NO_CONFIG_ERROR = "There is no config";
+const INPUT_ERROR = "Input file is not existed"
+const OUTPUT_ERROR = "Output file is not existed";
 
 export {
   ERROR_TEXT,
@@ -25,4 +28,7 @@ export {
   FLAG_CONFIG_ABV,
   ALPHABET,
   ARGUMENTS_ERROR,
+  NO_CONFIG_ERROR,
+  INPUT_ERROR,
+  OUTPUT_ERROR,
 };
