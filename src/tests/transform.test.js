@@ -1,4 +1,5 @@
 import jest from "jest-mock";
+import { fileURLToPath } from "url";
 import { PassThrough, pipeline } from "stream";
 import { getValue } from "../utils/index.js";
 import {
@@ -14,62 +15,80 @@ import {
   INPUT_ERROR,
   OUTPUT_ERROR,
 } from "../constants/index.js";
-import MyTransform from "../../transform.js";
 import configValidation from "../../config.js";
 import { createStreamCollection } from "../streams/index.js";
+import { createWriteStream, createReadStream } from "fs";
+import path, { dirname } from "path";
+import { ciphering_cli } from "../../chipher.js";
 
-describe("First task examples", () => {
-  const mockFilePathInput = "./input.txt";
-  const mockFilePathOutput = "./output.txt";
+describe("Success cases", () => {
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  const mockFilePathInput = path.join(__dirname, "./input.txt");
+  const mockFilePathOutput = path.join(__dirname, "./output.txt");
+  const outputText = 'Myxn xn nbdobm. Tbnnfzb ferlm "_" nhteru!';
 
-  test("transform config 'C1-C1-R0-A'", () => {
-    const config = "C1-C1-R0-A";
-    const mockConfigArr = configValidation(config);
-    // const collectionOfStreams = createStreamCollection(mockConfigArr);
+  test("config C1-C1-R0-A", () => {
+    const cli_arguments = [
+      FLAG_CONFIG,
+      "C1-C1-R0-A",
+      FLAG_INPUT,
+      mockFilePathInput,
+      FLAG_OUTPUT,
+      mockFilePathOutput,
+    ];
+    const configArr = configValidation("C1-C1-R0-A");
+    console.log(mockFilePathOutput);
 
-    const mockReadable = new PassThrough();
-    const mockWritable = new PassThrough();
+    const read = createReadStream(mockFilePathInput);
+    const write = createWriteStream(mockFilePathOutput);
+    const collectionOfStreams = createStreamCollection(configArr);
 
-    const mockcollectionOfStreams = jest.fn().mockImplementation(() => {
-      return createStreamCollection(mockConfigArr);
+    pipeline(read, ...collectionOfStreams, write, (err) => {
+      if (err) {
+        console.log(err);
+      }
     });
-    // console.log('mock', mockcollectionOfStreams)
 
-    // pipeline(mockReadable, ...mockcollectionOfStreams, mockWritable, err);
+    write.on("data", (buffer) => {
+      expect(buffer.toString()).toEqual(outputText);
+    });
   });
 
-  // test("check", async () => {
-  //   const config = "C1-C1-R0-A";
-  //   const mockConfigArr = configValidation(config);
+  test("config 'C1-C0-A-R1-R0-A-R0-R0-C1-A'", () => {
+    const configArr = configValidation("C1-C0-A-R1-R0-A-R0-R0-C1-A");
+    console.log(mockFilePathOutput);
 
-  //   const cli_arguments = [
-  //     FLAG_CONFIG,
-  //     "C1-C1-R0-A",
-  //     FLAG_INPUT,
-  //     "./src/tests/input.txt",
-  //     FLAG_OUTPUT,
-  //     "./src/tests/output.txt",
-  //   ];
+    const read = createReadStream(mockFilePathInput);
+    const write = createWriteStream(mockFilePathOutput);
+    const collectionOfStreams = createStreamCollection(configArr);
 
-  //   // const exitMock = jest.fn();
+    pipeline(read, ...collectionOfStreams, write, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
 
-  //   // jest.spyOn(process, "exit").mockImplementation(() => {});
+    createReadStream(mockFilePathOutput).on("data", (buffer) => {
+      expect(buffer.toString()).toEqual(outputText);
+    });
+  });
 
-  //   // const checkErrorMessage = jest
-  //   //   .spyOn(process.stderr, "write")
-  //   //   .mockImplementation(() => {});
+  test("config C1-R1-C0-C0-A-R0-R1-R1-A-C1", () => {
+    const configArr = configValidation("C1-R1-C0-C0-A-R0-R1-R1-A-C1");
+    console.log(mockFilePathOutput);
 
-  //   // global.process = { ...realProcess, exit: exitMock };
+    const read = createReadStream(mockFilePathInput);
+    const write = createWriteStream(mockFilePathOutput);
+    const collectionOfStreams = createStreamCollection(configArr);
 
-  //   ciphering_cli(cli_arguments);
-  //   // expect(checkErrorMessage).toHaveBeenCalledWith(OUTPUT_ERROR);
-  //   // const user = {
-  //   //   getFullName: jest.fn(() =>
-  //   //     Promise.reject(new Error("Something went wrong"))
-  //   //   ),
-  //   // };
-  //   // await expect(user.getFullName("Karl Hadwen")).rejects.toThrow(
-  //   //   "Something went wrong"
-  //   // );
-  // });
+    pipeline(read, ...collectionOfStreams, write, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+
+    createReadStream(mockFilePathOutput).on("data", (buffer) => {
+      expect(buffer.toString()).toEqual(outputText);
+    });
+  });
 });

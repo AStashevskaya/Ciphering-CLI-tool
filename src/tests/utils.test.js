@@ -4,8 +4,6 @@ import {
   FLAG_CONFIG,
   FLAG_INPUT,
   FLAG_OUTPUT,
-  FLAG_OUTPUT_ABV,
-  FLAG_INPUT_ABV,
   FLAG_CONFIG_ABV,
   ERROR_TEXT,
   ARGUMENTS_ERROR,
@@ -17,7 +15,7 @@ import { ciphering_cli } from "../../chipher.js";
 
 describe("Test cli arguments", () => {
   const realProcess = process;
-  
+
   test("User passes no arguments;", () => {
     const values = getValue([], FLAG_CONFIG, FLAG_CONFIG_ABV);
 
@@ -89,51 +87,46 @@ describe("Test cli arguments", () => {
     expect(checkErrorMessage).toHaveBeenLastCalledWith(INPUT_ERROR);
   });
 
-  test(
-    "User passes incorrent symbols in argument for --config", () => {
-      const cli_arguments = [
-        FLAG_CONFIG,
-        "C-C1"
-      ];
+  test("User passes incorrent symbols in argument for --config", () => {
+    const cli_arguments = [FLAG_CONFIG, "C-C1"];
 
-      const exitMock = jest.fn();
+    const exitMock = jest.fn();
 
-      jest.spyOn(process, "exit").mockImplementation(() => {});
+    jest.spyOn(process, "exit").mockImplementation(() => {});
 
-      const checkErrorMessage = jest
-        .spyOn(process.stderr, "write")
-        .mockImplementation(() => {});
+    const checkErrorMessage = jest
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => {});
 
-      global.process = { ...realProcess, exit: exitMock };
+    global.process = { ...realProcess, exit: exitMock };
 
-      ciphering_cli(cli_arguments);
-      expect(exitMock).toHaveBeenCalledWith(1);
-      expect(checkErrorMessage).toHaveBeenLastCalledWith(ERROR_TEXT);
-    }
-  );
+    ciphering_cli(cli_arguments);
+    expect(exitMock).toHaveBeenCalledWith(1);
+    expect(checkErrorMessage).toHaveBeenLastCalledWith(ERROR_TEXT);
+  });
 
-   test("User passes -o argument with path to directory that doesn't exist or with no read access", () => {
-     const cli_arguments = [
-       FLAG_CONFIG,
-       "C1-C1",
-       FLAG_INPUT,
-       "./input.txt",
-       FLAG_OUTPUT,
-       "./src/output.txt",
-     ];
+  test("User passes -o argument with path to directory that doesn't exist or with no read access", () => {
+    const cli_arguments = [
+      FLAG_CONFIG,
+      "C1-C1",
+      FLAG_INPUT,
+      "./input.txt",
+      FLAG_OUTPUT,
+      "./src/output.txt",
+    ];
 
-     const exitMock = jest.fn();
+    const exitMock = jest.fn();
 
-     jest.spyOn(process, "exit").mockImplementation(() => {});
+    jest.spyOn(process, "exit").mockImplementation(() => {});
 
-     const checkErrorMessage = jest
-       .spyOn(process.stderr, "write")
-       .mockImplementation(() => {});
+    const checkErrorMessage = jest
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => {});
 
-     global.process = { ...realProcess, exit: exitMock };
+    global.process = { ...realProcess, exit: exitMock };
 
-     ciphering_cli(cli_arguments);
-     expect(exitMock).toHaveBeenCalledWith(1);
-     expect(checkErrorMessage).toHaveBeenLastCalledWith(OUTPUT_ERROR);
-   });
+    ciphering_cli(cli_arguments);
+    expect(exitMock).toHaveBeenCalledWith(1);
+    expect(checkErrorMessage).toHaveBeenLastCalledWith(OUTPUT_ERROR);
+  });
 });
