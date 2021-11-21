@@ -17,10 +17,7 @@ import { ciphering_cli } from "../../chipher.js";
 
 describe("Test cli arguments", () => {
   const realProcess = process;
-
-  // afterEach(() => {
-  //   global.process = realProcess;
-  // });
+  
   test("User passes no arguments;", () => {
     const values = getValue([], FLAG_CONFIG, FLAG_CONFIG_ABV);
 
@@ -40,7 +37,7 @@ describe("Test cli arguments", () => {
 
     getValue([FLAG_CONFIG, FLAG_CONFIG], FLAG_CONFIG, FLAG_CONFIG_ABV);
     expect(exitMock).toHaveBeenCalledWith(1);
-    expect(checkErrorMessage).toHaveBeenCalledWith(ARGUMENTS_ERROR);
+    expect(checkErrorMessage).toHaveBeenLastCalledWith(ARGUMENTS_ERROR);
     global.process = realProcess;
   });
 
@@ -64,7 +61,7 @@ describe("Test cli arguments", () => {
 
     ciphering_cli(cli_arguments);
     expect(exitMock).toHaveBeenCalledWith(1);
-    expect(checkErrorMessage).toHaveBeenCalledWith(NO_CONFIG_ERROR);
+    expect(checkErrorMessage).toHaveBeenLastCalledWith(NO_CONFIG_ERROR);
   });
 
   test("User passes -i argument with path that doesn't exist or with no read access", () => {
@@ -89,7 +86,7 @@ describe("Test cli arguments", () => {
 
     ciphering_cli(cli_arguments);
     expect(exitMock).toHaveBeenCalledWith(1);
-    expect(checkErrorMessage).toHaveBeenCalledWith(INPUT_ERROR);
+    expect(checkErrorMessage).toHaveBeenLastCalledWith(INPUT_ERROR);
   });
 
   test(
@@ -111,7 +108,7 @@ describe("Test cli arguments", () => {
 
       ciphering_cli(cli_arguments);
       expect(exitMock).toHaveBeenCalledWith(1);
-      expect(checkErrorMessage).toHaveBeenCalledWith(ERROR_TEXT);
+      expect(checkErrorMessage).toHaveBeenLastCalledWith(ERROR_TEXT);
     }
   );
 
@@ -137,6 +134,6 @@ describe("Test cli arguments", () => {
 
      ciphering_cli(cli_arguments);
      expect(exitMock).toHaveBeenCalledWith(1);
-     expect(checkErrorMessage).toHaveBeenCalledWith(OUTPUT_ERROR);
+     expect(checkErrorMessage).toHaveBeenLastCalledWith(OUTPUT_ERROR);
    });
 });
